@@ -23,10 +23,11 @@ class CreateTransactionService {
     const categoryRepository = getRepository(Category);
     let category_id;
 
-    const { total } = await transactionsRepository.getBalance();
-
-    if (type === 'outcome' && total < value) {
-      throw new AppError('There is no balance available');
+    if (type === 'outcome') {
+      const { total } = await transactionsRepository.getBalance();
+      if (total < value) {
+        throw new AppError('There is no balance available');
+      }
     }
 
     const categoryExists = await categoryRepository.findOne({
